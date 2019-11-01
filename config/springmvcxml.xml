@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    	 xmlns:aop="http://www.springframework.org/schema/aop"
+    	  xmlns:context="http://www.springframework.org/schema/context"
+    	 	 xmlns:mvc="http://www.springframework.org/schema/mvc"
+    		xsi:schemaLocation="http://www.springframework.org/schema/beans
+        	http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+         	http://www.springframework.org/schema/aop 
+        	 http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+        	 http://www.springframework.org/schema/context
+        	http://www.springframework.org/schema/context/spring-context-4.3.xsd
+        	 http://www.springframework.org/schema/tx 
+   			 http://www.springframework.org/schema/tx/spring-tx-4.3.xsd
+   			 http://www.springframework.org/schema/mvc 
+    		http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd ">
+      <!--  配置Handle，通过该模型可以处理数据-->
+   <bean id="ItemController1" name="/items.action" class="springmvc.controller.ItemController"/>
+     <bean id="ItemController2" class="springmvc.controller.ItemController2"/>
+    <bean class="springmvc.controller.ItemController3"/>
+   
+      
+     <!-- 多个处理器映射器可以共存，控制器会根据URL判断哪个映射器可以映射改URL -->
+     <!--配置处理器映射器BeanNameUrlHandlerMapping,该类型的映射器可以根据bean的name来映射URL地址-->
+    <bean class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping" />
+
+    <!--  配置处理器映射SimpleUrlHandlerMapping，改映射可以根据Handle的beanid去映射URL-->
+      <bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+    	<property name="mappings">
+    	<props>
+    	<!-- key属性表明对应的URL -->
+    		 <prop key="/items1.action">ItemController1</prop>
+    		<prop key="/items2.action">ItemController1</prop>
+    		<prop key="/items3.action">ItemController2</prop>
+    	</props>
+    	</property>
+    </bean> 
+    
+    <!--
+    	配置注解类型的处理器映射器 RequestMappingHandlerMapping,
+    	springmvc在启动时会默认加载一些处理器适配器和处理器映射器。
+    	可在org.springframework.web.servlet下面的dispatcherServlet.properties配置文件中查看，
+    	改文件中默认加载的适配器和映射器在spring3.1以后就不使用需要重新配置
+    -->
+   <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping"/>
+    
+    <!-- 配置注解类型的处理器适配器RequestMappingHandlerAdapter -->
+      <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter"/>
+   <!--  使用mvc:annotation-driven注解驱动可以代替上面出现的两种注解类型的适配器和映射器，
+    	同时还会默认得加载一些一些参数的绑定方法  -->
+    
+    <!--配置处理器适配器，SimpleControllerHandlerAdapter类型的适配器可以执行处理实现了Controller接口的java对象-->
+	 <bean class="org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter"/>
+	
+	<!--  配置另外一种处理器适配器,改处理器适配器可以处理实现了HttpRequestHandler接口的java类-->
+	 <bean class="org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter"/> 
+	
+	<!-- 配置jsp类型的视图解析器InternalResourceViewResolver-->
+	 <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+   </bean>
+
+</beans>
